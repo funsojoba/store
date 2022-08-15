@@ -15,8 +15,9 @@ SECRET_KEY = config("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+AUTH_USER_MODEL = "authentication.User"
 
 # Application definition
 
@@ -28,7 +29,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # Installed apps
+    'rest_framework',
+    'drf_yasg',
+    
+    #local apps
+    'authentication', 
     'store',
+    'order',
 ]
 
 MIDDLEWARE = [
@@ -67,8 +75,12 @@ WSGI_APPLICATION = 'CORE.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config("POSTGRES_DBNAME"),
+        'USER': config("POSTGRES_USER"),
+        'PASSWORD': config("POSTGRES_PASS"),
+        'HOST': config("PG_HOST"),
+        'PORT': config("PG_PORT"),
     }
 }
 
