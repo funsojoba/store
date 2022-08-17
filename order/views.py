@@ -46,6 +46,32 @@ class OrderViewset(viewsets.ViewSet):
             status=status.HTTP_200_OK)
     
     @swagger_auto_schema(
+        operation_description="Get all orders",
+        operation_summary="Get all orders",
+        tags=["Order"],
+    )
+    def list(self, request, store_id=None):
+        service_response = OrderSerivce.list_order()
+        return Response(
+            data=dict(
+                store=OrderSerializer(service_response, many=True).data), 
+            status=status.HTTP_200_OK)
+
+    @swagger_auto_schema(
+        operation_description="Retrieve an order",
+        operation_summary="Retrieve an order",
+        tags=["Order"],
+    )
+
+    def retrieve(self, request, pk=None):
+        service_response = OrderSerivce.get_order(id=pk)
+        
+        return Response(
+            data=dict(
+                store=OrderSerializer(service_response).data), 
+            status=status.HTTP_200_OK)
+    
+    @swagger_auto_schema(
         operation_description="Add items to an order",
         operation_summary="Add items to an order",
         tags=["Order"],
@@ -62,27 +88,16 @@ class OrderViewset(viewsets.ViewSet):
             status=status.HTTP_200_OK)
     
     @swagger_auto_schema(
-        operation_description="Get all orders",
-        operation_summary="Get all orders",
+        operation_description="Remove items to an order",
+        operation_summary="Remove items to an order",
         tags=["Order"],
     )
-    def list(self, request, store_id=None):
-        service_response = OrderSerivce.list_order()
-        return Response(
-            data=dict(
-                store=OrderSerializer(service_response, many=True).data), 
-            status=status.HTTP_200_OK)
-
-    
-    @swagger_auto_schema(
-        operation_description="Retrieve an order",
-        operation_summary="Retrieve an order",
-        tags=["Order"],
-    )
-
-    def retrieve(self, request, pk=None):
-        service_response = OrderSerivce.get_order(id=pk)
-        
+    @action(detail=False, methods=["post"], url_path="(?P<order_id>[a-z,A-Z,0-9]+)/remove-items/")
+    def remove_item_from_order(self, request, order_id=None):
+        serializer = ItemListSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        items = serializer.data.get("items")
+        service_response = OrderSerivce.remove_item_to_order(order_id=order_id, items=items)
         return Response(
             data=dict(
                 store=OrderSerializer(service_response).data), 

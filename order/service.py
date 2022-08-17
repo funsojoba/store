@@ -1,4 +1,5 @@
 from django.db import transaction
+from rest_framework import serializers
 
 from .models import Item, Order
 
@@ -56,4 +57,15 @@ class OrderSerivce:
             for element in items:
                 item =  ItemSerivce.get_item(id=element)
                 order.item.add(item)
+        return order
+    
+    @classmethod
+    def remove_item_to_order(cls, order_id, items):
+        order = cls.get_order(id=order_id)
+        with transaction.atomic():
+            for element in items:
+                item =  ItemSerivce.get_item(id=element)
+                if not order.item.filter(id=item.id).exists():
+                    raise serializers.ValidationError(f"{item.name} is not found in order")
+                order.item.remove(item)
         return order
