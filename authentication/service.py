@@ -12,8 +12,7 @@ from .serializers import UserSerializer
 
 class UserService:
     @classmethod
-    def _create_user(cls, user_type, **kwargs):
-        otp = get_otp()
+    def create_user(cls, **kwargs):
         password = kwargs.get("password")
 
         user = User.objects.create(
@@ -50,3 +49,7 @@ class UserService:
     @classmethod
     def get_all_users(cls):
         return User.objects.all()
+    
+    @classmethod
+    def get_user(cls, **kwargs):
+        return User.objects.filter(**kwargs).first()
