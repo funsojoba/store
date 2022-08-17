@@ -15,7 +15,6 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    store = StoreSerializer(read_only=True)
     item = ItemSerializer(many=True)
     customer = UserSerializer(read_only=True)
     
@@ -29,3 +28,7 @@ class CreateOrderSerializer(serializers.Serializer):
     store_id = serializers.CharField()
     items = serializers.JSONField(default=list)
     state = serializers.ChoiceField(choices=Order.ORDER_STATE)
+    
+
+class ItemListSerializer(serializers.Serializer):
+    items = serializers.ListField(child=serializers.CharField())

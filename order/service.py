@@ -23,12 +23,12 @@ class OrderSerivce:
         return Order.objects.filter(**kwargs).first()
     
     @classmethod
-    def list_order(cls, **kwargs):
-        return Order.objects.filter(**kwargs)
+    def list_order(cls):
+        return Order.objects.all()
     
     @classmethod
-    def list_store_order(cls, **kwargs):
-        return Order.objects.filter(store__id=kwargs.get("store_id"))
+    def list_store_order(cls, store_id):
+        return Order.objects.filter(store__id=store_id)
     
     @classmethod
     def create_order(cls, request, **kwargs):
