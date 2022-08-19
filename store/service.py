@@ -5,7 +5,11 @@ class StoreService:
     
     @classmethod
     def get_all_store(cls, request):
-        return Store.objects.filter(owner=request.user)
+        name = request.GET.get("name")
+        queryset = Store.objects.filter(owner=request.user)
+        if name:
+            queryset = queryset.filter(description__search=name)
+        return queryset
     
     
     @classmethod
